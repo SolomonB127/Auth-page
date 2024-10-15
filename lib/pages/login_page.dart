@@ -1,10 +1,11 @@
 import 'package:auth_page/components/buttons.dart';
 import 'package:auth_page/components/textfields.dart';
 import 'package:auth_page/components/tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -12,7 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // controllers
-  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passWordController = TextEditingController();
 
@@ -26,7 +27,26 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // Sign In method
-  void signIn() {}
+  void signIn() async {
+    // show loading circle
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+
+    try {
+      // Sign in
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text, password: passWordController.text);
+    } catch (e) {
+    } finally {
+      if (mounted) {
+        // pop loader
+        Navigator.pop(context);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +77,10 @@ class _LoginPageState extends State<LoginPage> {
                 height: 25,
               ),
               // Textfield
-              // username field
+              // email field
               Textfields(
-                controller: userNameController,
-                labelText: "Username",
+                controller: emailController,
+                labelText: "Email",
                 obscureText: false,
               ),
               const SizedBox(
@@ -181,9 +201,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-/*
-- Added images to file tree amd Yaml file,
-- Created Components folder
-- Created Custom Textfields 
-*/
