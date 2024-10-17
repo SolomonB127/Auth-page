@@ -26,27 +26,66 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  // Sign In method
-  void signIn() async {
-    // show loading circle
+void signIn() async {
+  // show loading circle
+  showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(child: CircularProgressIndicator());
+      });
+
+  try {
+    // Sign in
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text, password: passWordController.text);
+  } on FirebaseAuthException catch (e) {
+    // Pop the loader before showing error
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    // Wrong Email!
+    if (e.code == "user-not-found") {
+      wrongEmailMsg();
+    }
+    // Wrong Password!!
+    else if (e.code == "wrong-password") {
+      wrongPasswordMsg();
+    }
+  } finally {
+    // Ensure the loader is always dismissed
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+}
+
+// invalid email pop up
+void wrongEmailMsg() {
+  if (mounted) {
     showDialog(
         context: context,
         builder: (context) {
-          return const Center(child: CircularProgressIndicator());
+          return const AlertDialog(
+            title: Text("Invalid Email"),
+          );
         });
-
-    try {
-      // Sign in
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passWordController.text);
-    } catch (e) {
-    } finally {
-      if (mounted) {
-        // pop loader
-        Navigator.pop(context);
-      }
-    }
   }
+}
+
+// invalid password pop up
+void wrongPasswordMsg() {
+  if (mounted) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            title: Text("Invalid Password"),
+          );
+        });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
