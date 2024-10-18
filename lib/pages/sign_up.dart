@@ -18,6 +18,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
   final TextEditingController passWordController = TextEditingController();
 
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
   // showPassword method
   bool isOpen = true;
 
@@ -38,9 +41,15 @@ class _SignUpPageState extends State<SignUpPage> {
 
     // try creating user
     try {
-      // Sign in
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passWordController.text);
+      // Sign user up
+      // check if password is confirmed
+      if (passWordController.text == confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text, password: passWordController.text);
+      } else {
+        // password mismatch
+        showErrorMsg("Password mismatch!");
+      }
       if (mounted) {
         Navigator.pop(context);
       }
@@ -139,7 +148,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       Alignment.centerRight, // Align the icon to the right
                   children: [
                     Textfields(
-                      controller: passWordController,
+                      controller: confirmPasswordController,
                       obscureText: isOpen,
                       labelText: "Confirm Password",
                     ),
@@ -156,22 +165,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                // forgot password
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
                 ),
 
                 const SizedBox(
