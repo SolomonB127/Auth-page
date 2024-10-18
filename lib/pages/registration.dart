@@ -26,7 +26,7 @@ class _RegistrationState extends State<Registration> {
     if (showlogin) {
       return LoginPage(onTap: togglePages);
     } else {
-      return const SignUpPage();
+      return SignUpPage(onTap: togglePages,);
     }
   }
 }
