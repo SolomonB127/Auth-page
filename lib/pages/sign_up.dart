@@ -1,6 +1,7 @@
 import 'package:auth_page/components/buttons.dart';
 import 'package:auth_page/components/textfields.dart';
 import 'package:auth_page/components/tile.dart';
+import 'package:auth_page/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -208,16 +209,22 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     // google button
-                    Tile(imgPath: "assets/google.png"),
-                    SizedBox(
+                    Tile(
+                      imgPath: "assets/google.png",
+                      onTap: () => AuthService().signInWithGoogle(),
+                    ),
+                    const SizedBox(
                       width: 30,
                     ),
                     // apple button
-                    Tile(imgPath: "assets/apple.png")
+                    Tile(
+                      imgPath: "assets/apple.png",
+                      onTap: () {},
+                    )
                   ],
                 ),
                 const SizedBox(
